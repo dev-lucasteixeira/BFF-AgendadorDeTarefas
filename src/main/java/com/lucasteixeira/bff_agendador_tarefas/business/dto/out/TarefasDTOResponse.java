@@ -16,7 +16,13 @@ public class TarefasDTOResponse {
     private String id;
     private String nomeTarefa;
     private String descricao;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    private LocalDateTime dataCriacao;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private LocalDateTime dataEvento;
+    private String emailUsuario;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    private LocalDateTime dataAlteracao;
+    private StatusNotificacaoEnum statusNotificacaoEnum; //grupo de valores que são constantes e não pode ser alterado
 
 }

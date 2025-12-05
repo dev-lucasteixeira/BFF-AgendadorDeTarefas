@@ -5,6 +5,7 @@ package com.lucasteixeira.bff_agendador_tarefas.business;
 import com.lucasteixeira.bff_agendador_tarefas.business.dto.in.TarefasDTORequest;
 import com.lucasteixeira.bff_agendador_tarefas.business.dto.out.TarefasDTOResponse;
 import com.lucasteixeira.bff_agendador_tarefas.business.enums.StatusNotificacaoEnum;
+import com.lucasteixeira.bff_agendador_tarefas.infrastructure.client.EmailClient;
 import com.lucasteixeira.bff_agendador_tarefas.infrastructure.client.TarefasClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,10 +17,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EmailService {
 
-    private final EmailService tarefasClient;
+    private final EmailClient emailClient;
 
-    public TarefasDTOResponse enviaEmail(TarefasDTOResponse dto){
-        return tarefasClient.enviaEmail(dto);
+    public void enviaEmail(TarefasDTOResponse dto){
+        emailClient.enviaEmail(dto);
     }
 
 }

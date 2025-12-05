@@ -1,7 +1,6 @@
 package com.lucasteixeira.bff_agendador_tarefas.business.dto.in;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.lucasteixeira.bff_agendador_tarefas.business.enums.StatusNotificacaoEnum;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -13,16 +12,9 @@ import java.time.LocalDateTime;
 @Builder
 public class TarefasDTORequest {
 
-    private String id;
     private String nomeTarefa;
     private String descricao;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
-    private LocalDateTime dataCriacao;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private LocalDateTime dataEvento;
-    private String emailUsuario;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
-    private LocalDateTime dataAlteracao;
-    private StatusNotificacaoEnum statusNotificacaoEnum; //grupo de valores que são constantes e não pode ser alterado
 
 }
