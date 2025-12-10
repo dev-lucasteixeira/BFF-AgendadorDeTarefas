@@ -3,6 +3,7 @@ package com.lucasteixeira.bff_agendador_tarefas.controller;
 import com.lucasteixeira.bff_agendador_tarefas.infrastructure.exceptions.ConflictException;
 import com.lucasteixeira.bff_agendador_tarefas.infrastructure.exceptions.ResourceNotFoundException;
 import com.lucasteixeira.bff_agendador_tarefas.infrastructure.exceptions.UnauhthorizedException;
+import com.lucasteixeira.bff_agendador_tarefas.infrastructure.exceptions.IllegalArgumentException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -24,5 +25,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UnauhthorizedException.class)
     public ResponseEntity<String> handlerUnauhthorizedException(UnauhthorizedException unauhthorizedException){
         return new ResponseEntity<>(unauhthorizedException.getMessage(), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handlerIllegalArgumentException(IllegalArgumentException illegalArgumentException){
+        return new ResponseEntity<>(illegalArgumentException.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }
