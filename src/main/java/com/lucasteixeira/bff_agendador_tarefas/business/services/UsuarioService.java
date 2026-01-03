@@ -1,4 +1,4 @@
-package com.lucasteixeira.bff_agendador_tarefas.business;
+package com.lucasteixeira.bff_agendador_tarefas.business.services;
 
 
 import com.lucasteixeira.bff_agendador_tarefas.business.dto.in.EnderecoDTORequest;

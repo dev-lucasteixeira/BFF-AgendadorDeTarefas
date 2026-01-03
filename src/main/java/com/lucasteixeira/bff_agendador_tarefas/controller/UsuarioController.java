@@ -1,7 +1,7 @@
 package com.lucasteixeira.bff_agendador_tarefas.controller;
 
 
-import com.lucasteixeira.bff_agendador_tarefas.business.UsuarioService;
+import com.lucasteixeira.bff_agendador_tarefas.business.services.UsuarioService;
 import com.lucasteixeira.bff_agendador_tarefas.business.dto.in.EnderecoDTORequest;
 import com.lucasteixeira.bff_agendador_tarefas.business.dto.in.LoginRequestDTO;
 import com.lucasteixeira.bff_agendador_tarefas.business.dto.in.TelefoneDTORequest;

@@ -16,29 +16,25 @@ import java.util.List;
 public interface TarefasClient {
 
     @PostMapping
-    TarefasDTOResponse gravarTarefa(@RequestBody TarefasDTORequest tarefasDTO, @RequestHeader("Authorization") String token);
+    TarefasDTOResponse gravarTarefa(@RequestBody TarefasDTORequest tarefasDTO);
 
 
     @GetMapping("/eventos")
     List<TarefasDTOResponse> buscaListaDeTarefasPorPeriodo(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dataInicial,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)LocalDateTime dataFinal,
-            @RequestHeader("Authorization") String token);
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)LocalDateTime dataFinal);
 
     @GetMapping
-    List<TarefasDTOResponse> buscaListaDeTarefasPorEmail(@RequestHeader("Authorization") String token);
+    List<TarefasDTOResponse> buscaListaDeTarefasPorEmail();
 
     @DeleteMapping
-    void deletaTarefaPorId(@RequestParam String id,
-                           @RequestHeader("Authorization") String token);
+    void deletaTarefaPorId(@RequestParam String id);
 
     @PatchMapping
     TarefasDTOResponse alteraStatusNotificacao(@RequestParam("status") StatusNotificacaoEnum status,
-                                               @RequestParam("id") String id,
-                                               @RequestHeader("Authorization") String token);
+                                               @RequestParam("id") String id);
 
     @PutMapping
     TarefasDTOResponse UpdateTarefa(@RequestBody TarefasDTORequest dto,
-                                    @RequestParam("id") String id,
-                                    @RequestHeader("Authorization") String token);
+                                    @RequestParam("id") String id);
 }

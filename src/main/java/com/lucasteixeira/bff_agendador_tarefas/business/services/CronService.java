@@ -1,4 +1,4 @@
-package com.lucasteixeira.bff_agendador_tarefas.business;
+package com.lucasteixeira.bff_agendador_tarefas.business.services;
 
 
 import com.lucasteixeira.bff_agendador_tarefas.business.dto.in.LoginRequestDTO;
@@ -32,20 +32,17 @@ public class CronService {
     @Scheduled(cron = "${cron.horario}")
     public void BuscaTarefasProximaHora(){
 
-        String token = login(converterParaResquestDTO());
-
-
         LocalDateTime horaFutura = LocalDateTime.now().plusHours(1);
         LocalDateTime horaFuturaMaisCinco = horaFutura.plusHours(1).plusMinutes(5);
 
-        List<TarefasDTOResponse> listaTarefas = tarefaService.buscaTarefasAgendadasPorPeriodo(horaFutura, horaFuturaMaisCinco, token);
+        List<TarefasDTOResponse> listaTarefas = tarefaService.buscaTarefasAgendadasPorPeriodo(horaFutura, horaFuturaMaisCinco);
 
         log.info("Tarefas encontradas " + listaTarefas);
 
         listaTarefas.forEach(tarefa -> {
             emailService.enviaEmail(tarefa);
             log.info("Email enviado para o usuario " + tarefa.getEmailUsuario());
-            tarefaService.alteraStatus(StatusNotificacaoEnum.NOTIFICADO, tarefa.getId(), token);});
+            tarefaService.alteraStatus(StatusNotificacaoEnum.NOTIFICADO, tarefa.getId());});
     }
 
     public String login(LoginRequestDTO loginRequestDTO){
