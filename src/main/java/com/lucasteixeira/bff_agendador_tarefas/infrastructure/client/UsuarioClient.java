@@ -16,9 +16,8 @@ import org.springframework.web.bind.annotation.*;
 @FeignClient(name = "usuario", url = "${usuario.url}")
 public interface UsuarioClient {
 
-    @GetMapping("/usuario")
-    UsuarioDTOResponse buscaUsuarioPorEmail(@RequestParam("email") String email,
-                                            @RequestHeader("Authorization") String token);
+    @GetMapping
+    UsuarioDTOResponse buscaUsuarioPorEmail(@RequestParam("email") String email);
 
 
     @PostMapping
@@ -30,30 +29,24 @@ public interface UsuarioClient {
      String login(@RequestBody LoginRequestDTO loginRequestDTO);
 
     @DeleteMapping("/{email}")
-    void deletaUsuarioPorEmail(@PathVariable String email,
-                                                      @RequestHeader("Authorization") String token);
+    void deletaUsuarioPorEmail(@PathVariable String email);
 
     @PutMapping
-    UsuarioDTOResponse atualizaDadosUsuario(@RequestBody UsuarioDTORequest dto,
-                                            @RequestHeader("Authorization") String token);
+    UsuarioDTOResponse atualizaDadosUsuario(@RequestBody UsuarioDTORequest dto);
 
     @PutMapping("/endereco")
     EnderecoDTOResponse atualizaEndereco(@RequestBody EnderecoDTORequest dto,
-                                         @RequestParam("id") Long id,
-                                         @RequestHeader("Authorization") String token);
+                                         @RequestParam("id") Long id);
 
     @PutMapping("/telefone")
     TelefoneDTOResponse atualizaTelefone(@RequestBody TelefoneDTORequest dto,
-                                         @RequestParam("id") Long id,
-                                         @RequestHeader("Authorization") String token);
+                                         @RequestParam("id") Long id);
 
     @PostMapping("/endereco")
-    EnderecoDTOResponse cadastraEndereco(@RequestBody EnderecoDTORequest dto,
-                                         @RequestHeader("Authorization") String token);
+    EnderecoDTOResponse cadastraEndereco(@RequestBody EnderecoDTORequest dto);
 
     @PostMapping("/telefone")
-    TelefoneDTOResponse cadastraTelefone(@RequestBody TelefoneDTORequest dto,
-                                         @RequestHeader("Authorization") String token);
+    TelefoneDTOResponse cadastraTelefone(@RequestBody TelefoneDTORequest dto);
 
     @GetMapping("/endereco/{cep}")
     ViaCepDTOResponse buscarDadosCep(@PathVariable("cep") String cep);

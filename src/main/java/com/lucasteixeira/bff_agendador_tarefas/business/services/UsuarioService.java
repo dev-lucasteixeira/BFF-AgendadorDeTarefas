@@ -31,36 +31,35 @@ public class UsuarioService {
     }
 
 
-    public UsuarioDTOResponse buscUsuarioPorEmail(String email, String token){
-        return usuarioClient.buscaUsuarioPorEmail(email, token);
+    public UsuarioDTOResponse buscaUsuarioPorEmail(String email, String token){
+        return usuarioClient.buscaUsuarioPorEmail(email);
     }
 
     public void deletaUsuarioPorEmail(String email, String token){
-        usuarioClient.deletaUsuarioPorEmail(email,token);
+        usuarioClient.deletaUsuarioPorEmail(email);
     }
 
     public UsuarioDTOResponse atualizaDadosUsuario(String token, UsuarioDTORequest dto){
-        return usuarioClient.atualizaDadosUsuario(dto, token);
+        return usuarioClient.atualizaDadosUsuario(dto);
     }
 
     public TelefoneDTOResponse atualizaTelefone(Long idTelefone, TelefoneDTORequest dto, String token){
 
-        return usuarioClient.atualizaTelefone(dto, idTelefone, token
+        return usuarioClient.atualizaTelefone(dto, idTelefone
         );
     }
 
     public EnderecoDTOResponse atualizaEndereco(Long idEndereco, EnderecoDTORequest dto, String token){
 
-        return usuarioClient.atualizaEndereco(dto, idEndereco, token
-        );
+        return usuarioClient.atualizaEndereco(dto, idEndereco);
     }
 
     public EnderecoDTOResponse cadastraEndereco(String token, EnderecoDTORequest dto){
-        return usuarioClient.cadastraEndereco(dto, token);
+        return usuarioClient.cadastraEndereco(dto);
     }
 
     public TelefoneDTOResponse cadastraTelefone(String token, TelefoneDTORequest dto){
-        return usuarioClient.cadastraTelefone(dto, token);
+        return usuarioClient.cadastraTelefone(dto);
     }
 
     public ViaCepDTOResponse buscarEnderecoPorCep(String cep){

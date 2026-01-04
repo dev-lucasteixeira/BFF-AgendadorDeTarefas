@@ -11,15 +11,13 @@ public class FeignAuthInterceptor implements RequestInterceptor {
 
     @Override
     public void apply(RequestTemplate template) {
-        // O RequestContextHolder é o segredo: ele acessa a requisição que chegou no Controller
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-
         if (attributes != null) {
             String authorizationHeader = attributes.getRequest().getHeader("Authorization");
 
+            // Só aplica se o header existir e não for nulo/vazio
             if (authorizationHeader != null && !authorizationHeader.isBlank()) {
-                // Aqui resolvemos seu problema do "Bearer Bearer" para TODOS os métodos
-                String tokenLimpo = authorizationHeader.replace("Bearer ", "").trim();
+                String tokenLimpo = authorizationHeader.replace("Bearer", "").trim();
                 template.header("Authorization", "Bearer " + tokenLimpo);
             }
         }
