@@ -9,9 +9,12 @@ services:
     environment:
       - SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/db_agendador
       - USUARIO_URL=http://usuario:8081
+      - SPRING_DATA_REDIS_HOST=redis
+      - SPRING_DATA_REDIS_PORT=6379
     depends_on:
       - mongo
       - usuario
+      - redis
 
   bff-agendador-tarefas:
     build: .
@@ -37,8 +40,11 @@ services:
       - SPRING_DATASOURCE_USERNAME=admin123
       - SPRING_DATASOURCE_PASSWORD=admin123
       - SPRING_MAIN_ALLOW_BEAN_DEFINITION_OVERRIDING=true
+      - SPRING_DATA_REDIS_HOST=redis
+      - SPRING_DATA_REDIS_PORT=6379
     depends_on:
       - postgres_usuario
+      - redis
 
   notificacao:
     build: ..\notificacao
@@ -52,6 +58,20 @@ services:
       - SPRING_MAIN_ALLOW_BEAN_DEFINITION_OVERRIDING=true
     depends_on:
       - postgres_notificacao
+
+  redis:
+    image: redis:alpine
+    container_name: redis-cache
+    restart: always
+    ports:
+      - "6379:6379"
+
+  redis-insight:
+    image: redis/redisinsight:latest
+    container_name: redis-insight
+    restart: always
+    ports:
+       - "5540:5540"
 
   postgres_usuario:
     image: postgres:latest
