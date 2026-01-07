@@ -19,46 +19,36 @@ public class UsuarioService {
 
     private final UsuarioClient usuarioClient;
 
-
     public UsuarioDTOResponse salvaUsuario(UsuarioDTORequest usuarioDTO){
-
         return usuarioClient.salvaUsuario(usuarioDTO);
     }
 
-
-    public String login(LoginRequestDTO loginRequestDTO){
-        return usuarioClient.login(loginRequestDTO);
-    }
-
-
-    public UsuarioDTOResponse buscaUsuarioPorEmail(String email, String token){
+    public UsuarioDTOResponse buscaUsuarioPorEmail(String email){
         return usuarioClient.buscaUsuarioPorEmail(email);
     }
 
-    public void deletaUsuarioPorEmail(String email, String token){
+    public void deletaUsuarioPorEmail(String email){
         usuarioClient.deletaUsuarioPorEmail(email);
     }
 
-    public UsuarioDTOResponse atualizaDadosUsuario(String token, UsuarioDTORequest dto){
+    public UsuarioDTOResponse atualizaDadosUsuario(UsuarioDTORequest dto, String email){
+        // O interceptor enviará o token, e o MS-Usuario saberá quem é o dono pelo Token
         return usuarioClient.atualizaDadosUsuario(dto);
     }
 
-    public TelefoneDTOResponse atualizaTelefone(Long idTelefone, TelefoneDTORequest dto, String token){
-
-        return usuarioClient.atualizaTelefone(dto, idTelefone
-        );
+    public TelefoneDTOResponse atualizaTelefone(Long idTelefone, TelefoneDTORequest dto, String email){
+        return usuarioClient.atualizaTelefone(dto, idTelefone);
     }
 
-    public EnderecoDTOResponse atualizaEndereco(Long idEndereco, EnderecoDTORequest dto, String token){
-
+    public EnderecoDTOResponse atualizaEndereco(Long idEndereco, EnderecoDTORequest dto, String email){
         return usuarioClient.atualizaEndereco(dto, idEndereco);
     }
 
-    public EnderecoDTOResponse cadastraEndereco(String token, EnderecoDTORequest dto){
+    public EnderecoDTOResponse cadastraEndereco(String email, EnderecoDTORequest dto){
         return usuarioClient.cadastraEndereco(dto);
     }
 
-    public TelefoneDTOResponse cadastraTelefone(String token, TelefoneDTORequest dto){
+    public TelefoneDTOResponse cadastraTelefone(String email, TelefoneDTORequest dto){
         return usuarioClient.cadastraTelefone(dto);
     }
 

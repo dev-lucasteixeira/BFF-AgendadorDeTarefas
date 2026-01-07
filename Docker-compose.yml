@@ -8,10 +8,12 @@ services:
       - "8082:8082"
     environment:
       - SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/db_agendador
-      - USUARIO_URL=http://api-gateway:8080/usuario
+      - USUARIO_URL=http://api-gateway:8080
       - SPRING_DATA_REDIS_HOST=redis
       - SPRING_DATA_REDIS_PORT=6379
       - MANAGEMENT_ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/api/v2/spans
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=http://keycloak:8080/realms/task-scheduler/protocol/openid-connect/certs
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI=http://localhost:8085/realms/task-scheduler
     depends_on:
       - mongo
       - usuario
@@ -24,10 +26,12 @@ services:
     ports:
       - "8084:8084"
     environment:
-      - USUARIO_URL=http://api-gateway:8080/usuario
-      - AGENDADOR_TAREFAS_URL=http://api-gateway:8080/tarefas
+      - USUARIO_URL=http://api-gateway:8080
+      - AGENDADOR_TAREFAS_URL=http://api-gateway:8080
       - NOTIFICACAO_URL=http://notificacao:8083/email
       - MANAGEMENT_ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/api/v2/spans
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=http://keycloak:8080/realms/task-scheduler/protocol/openid-connect/certs
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI=http://localhost:8085/realms/task-scheduler
     depends_on:
       - api-gateway
       - usuario
@@ -48,6 +52,11 @@ services:
       - SPRING_DATA_REDIS_HOST=redis
       - SPRING_DATA_REDIS_PORT=6379
       - MANAGEMENT_ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/api/v2/spans
+      - KEYCLOAK_AUTH_SERVER_URL=http://keycloak:8080
+      - KEYCLOAK_REALM=task-scheduler
+      - KEYCLOAK_RESOURCE=task-scheduler-client
+      - KEYCLOAK_CREDENTIALS_SECRET=sayD7JaC4ycNqNm7MB7LBuQFwSU8cPri
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI=http://localhost:8085/realms/task-scheduler
     depends_on:
       - postgres_usuario
       - redis
@@ -123,8 +132,12 @@ services:
     environment:
       KC_BOOTSTRAP_ADMIN_USERNAME: admin
       KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+      KC_HOSTNAME_STRICT: "false"
+      KC_HOSTNAME_STRICT_HTTPS: "false"
     ports:
       - "8085:8080"
+    volumes:
+      - keycloak_data:/opt/keycloak/data
 
   api-gateway:
     build: ../api-gateway
@@ -134,6 +147,8 @@ services:
     environment:
       - SPRING_CLOUD_COMPATIBILITY_VERIFIER_ENABLED=false
       - MANAGEMENT_ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/api/v2/spans
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI=http://localhost:8085/realms/task-scheduler
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=http://keycloak:8080/realms/task-scheduler/protocol/openid-connect/certs
     depends_on:
       - zipkin
       - usuario
@@ -143,3 +158,6 @@ services:
 networks:
   default:
     driver: bridge
+
+volumes:
+  keycloak_data:

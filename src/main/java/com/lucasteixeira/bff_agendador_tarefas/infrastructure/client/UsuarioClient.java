@@ -24,7 +24,7 @@ public interface UsuarioClient {
     UsuarioDTOResponse buscaUsuarioPorEmail(@RequestParam("email") String email);
 
 
-    @PostMapping
+    @PostMapping("/usuario")
     UsuarioDTOResponse salvaUsuario(@RequestBody UsuarioDTORequest usuarioDTO);
 
 
