@@ -9,14 +9,18 @@ import com.lucasteixeira.bff_agendador_tarefas.business.dto.out.EnderecoDTORespo
 import com.lucasteixeira.bff_agendador_tarefas.business.dto.out.TelefoneDTOResponse;
 import com.lucasteixeira.bff_agendador_tarefas.business.dto.out.UsuarioDTOResponse;
 import com.lucasteixeira.bff_agendador_tarefas.business.dto.out.ViaCepDTOResponse;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 @FeignClient(name = "usuario", url = "${usuario.url}")
 public interface UsuarioClient {
 
     @GetMapping
+    @CircuitBreaker(name = "ms-usuario", fallbackMethod = "fallbackBuscaUsuario")
     UsuarioDTOResponse buscaUsuarioPorEmail(@RequestParam("email") String email);
 
 
@@ -50,4 +54,11 @@ public interface UsuarioClient {
 
     @GetMapping("/endereco/{cep}")
     ViaCepDTOResponse buscarDadosCep(@PathVariable("cep") String cep);
+
+    default UsuarioDTOResponse fallbackBuscaUsuario(String email, Throwable t) {
+        return UsuarioDTOResponse.builder()
+                .nome("Usuário Temporariamente Indisponível")
+                .email(email)
+                .build();
+    }
 }

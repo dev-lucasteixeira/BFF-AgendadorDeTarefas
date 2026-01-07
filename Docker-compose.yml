@@ -8,13 +8,15 @@ services:
       - "8082:8082"
     environment:
       - SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/db_agendador
-      - USUARIO_URL=http://usuario:8081
+      - USUARIO_URL=http://api-gateway:8080/usuario
       - SPRING_DATA_REDIS_HOST=redis
       - SPRING_DATA_REDIS_PORT=6379
+      - MANAGEMENT_ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/api/v2/spans
     depends_on:
       - mongo
       - usuario
       - redis
+      - zipkin
 
   bff-agendador-tarefas:
     build: .
@@ -22,13 +24,16 @@ services:
     ports:
       - "8084:8084"
     environment:
-      - USUARIO_URL=http://usuario:8081/usuario
-      - AGENDADOR_TAREFAS_URL=http://agendador-tarefas:8082/tarefas
+      - USUARIO_URL=http://api-gateway:8080/usuario
+      - AGENDADOR_TAREFAS_URL=http://api-gateway:8080/tarefas
       - NOTIFICACAO_URL=http://notificacao:8083/email
+      - MANAGEMENT_ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/api/v2/spans
     depends_on:
+      - api-gateway
       - usuario
       - agendador-tarefas
       - notificacao
+      - zipkin
 
   usuario:
     build: ..\Usuario
@@ -42,9 +47,11 @@ services:
       - SPRING_MAIN_ALLOW_BEAN_DEFINITION_OVERRIDING=true
       - SPRING_DATA_REDIS_HOST=redis
       - SPRING_DATA_REDIS_PORT=6379
+      - MANAGEMENT_ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/api/v2/spans
     depends_on:
       - postgres_usuario
       - redis
+      - zipkin
 
   notificacao:
     build: ..\notificacao
@@ -56,8 +63,10 @@ services:
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=1234
       - SPRING_MAIN_ALLOW_BEAN_DEFINITION_OVERRIDING=true
+      - MANAGEMENT_ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/api/v2/spans
     depends_on:
       - postgres_notificacao
+      - zipkin
 
   redis:
     image: redis:alpine
@@ -100,6 +109,36 @@ services:
       - "27017:27017"
     environment:
       MONGO_INITDB_DATABASE: db_agendador
+
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin
+    ports:
+      - "9411:9411"
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: keycloak
+    command: start-dev
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+    ports:
+      - "8085:8080"
+
+  api-gateway:
+    build: ../api-gateway
+    container_name: api-gateway
+    ports:
+      - "8088:8080"
+    environment:
+      - SPRING_CLOUD_COMPATIBILITY_VERIFIER_ENABLED=false
+      - MANAGEMENT_ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/api/v2/spans
+    depends_on:
+      - zipkin
+      - usuario
+      - agendador-tarefas
+
 
 networks:
   default:
