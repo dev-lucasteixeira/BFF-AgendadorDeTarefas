@@ -1,7 +1,7 @@
 package com.lucasteixeira.bff_agendador_tarefas.controller;
 
 
-import com.lucasteixeira.bff_agendador_tarefas.business.UsuarioService;
+
 import com.lucasteixeira.bff_agendador_tarefas.business.dto.in.EnderecoDTORequest;
 import com.lucasteixeira.bff_agendador_tarefas.business.dto.in.LoginRequestDTO;
 import com.lucasteixeira.bff_agendador_tarefas.business.dto.in.TelefoneDTORequest;
@@ -10,6 +10,7 @@ import com.lucasteixeira.bff_agendador_tarefas.business.dto.out.EnderecoDTORespo
 import com.lucasteixeira.bff_agendador_tarefas.business.dto.out.TelefoneDTOResponse;
 import com.lucasteixeira.bff_agendador_tarefas.business.dto.out.UsuarioDTOResponse;
 import com.lucasteixeira.bff_agendador_tarefas.business.dto.out.ViaCepDTOResponse;
+import com.lucasteixeira.bff_agendador_tarefas.business.services.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -49,6 +50,7 @@ public class UsuarioController {
         return usuarioService.login(loginRequestDTO);
     }
 
+    //Ele procura o usuario pelo email
     @GetMapping
     @Operation(summary = "Bucas dados de Usuários por Email", description = "Bucas dados do usuário")
     @ApiResponse(responseCode = "200", description = "Usuário encontrado com sucesso")

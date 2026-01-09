@@ -1,4 +1,4 @@
-package com.lucasteixeira.bff_agendador_tarefas.business;
+package com.lucasteixeira.bff_agendador_tarefas.business.services;
 
 
 import com.lucasteixeira.bff_agendador_tarefas.business.dto.in.EnderecoDTORequest;
@@ -10,7 +10,6 @@ import com.lucasteixeira.bff_agendador_tarefas.business.dto.out.TelefoneDTORespo
 import com.lucasteixeira.bff_agendador_tarefas.business.dto.out.UsuarioDTOResponse;
 import com.lucasteixeira.bff_agendador_tarefas.business.dto.out.ViaCepDTOResponse;
 import com.lucasteixeira.bff_agendador_tarefas.infrastructure.client.UsuarioClient;
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,45 +25,42 @@ public class UsuarioService {
         return usuarioClient.salvaUsuario(usuarioDTO);
     }
 
-    @CircuitBreaker(name = "login", fallbackMethod = "O serviço não está disponível")
+
     public String login(LoginRequestDTO loginRequestDTO){
         return usuarioClient.login(loginRequestDTO);
     }
 
-    @CircuitBreaker(name = "buscaUsuarioPorEmail", fallbackMethod = "O serviço não está disponível")
+
     public UsuarioDTOResponse buscUsuarioPorEmail(String email, String token){
-        return usuarioClient.buscaUsuarioPorEmail(email, token);
+        return usuarioClient.buscaUsuarioPorEmail(email);
     }
 
     public void deletaUsuarioPorEmail(String email, String token){
-        usuarioClient.deletaUsuarioPorEmail(email,token);
+        usuarioClient.deletaUsuarioPorEmail(email);
     }
 
     public UsuarioDTOResponse atualizaDadosUsuario(String token, UsuarioDTORequest dto){
-        return usuarioClient.atualizaDadosUsuario(dto, token);
+        return usuarioClient.atualizaDadosUsuario(dto);
     }
 
     public TelefoneDTOResponse atualizaTelefone(Long idTelefone, TelefoneDTORequest dto, String token){
 
-        return usuarioClient.atualizaTelefone(dto, idTelefone, token
-        );
+        return usuarioClient.atualizaTelefone(dto, idTelefone);
     }
 
     public EnderecoDTOResponse atualizaEndereco(Long idEndereco, EnderecoDTORequest dto, String token){
 
-        return usuarioClient.atualizaEndereco(dto, idEndereco, token
-        );
+        return usuarioClient.atualizaEndereco(dto, idEndereco);
     }
 
     public EnderecoDTOResponse cadastraEndereco(String token, EnderecoDTORequest dto){
-        return usuarioClient.cadastraEndereco(dto, token);
+        return usuarioClient.cadastraEndereco(dto);
     }
 
     public TelefoneDTOResponse cadastraTelefone(String token, TelefoneDTORequest dto){
-        return usuarioClient.cadastraTelefone(dto, token);
+        return usuarioClient.cadastraTelefone(dto);
     }
 
-    @CircuitBreaker(name = "cep", fallbackMethod = "O serviço não está disponível")
     public ViaCepDTOResponse buscarEnderecoPorCep(String cep){
         return usuarioClient.buscarDadosCep(cep);
     }
