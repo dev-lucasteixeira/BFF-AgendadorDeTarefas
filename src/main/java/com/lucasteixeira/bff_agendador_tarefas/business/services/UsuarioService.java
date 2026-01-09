@@ -31,7 +31,7 @@ public class UsuarioService {
     }
 
 
-    public UsuarioDTOResponse buscaUsuarioPorEmail(String email, String token){
+    public UsuarioDTOResponse buscUsuarioPorEmail(String email, String token){
         return usuarioClient.buscaUsuarioPorEmail(email);
     }
 
@@ -45,8 +45,7 @@ public class UsuarioService {
 
     public TelefoneDTOResponse atualizaTelefone(Long idTelefone, TelefoneDTORequest dto, String token){
 
-        return usuarioClient.atualizaTelefone(dto, idTelefone
-        );
+        return usuarioClient.atualizaTelefone(dto, idTelefone);
     }
 
     public EnderecoDTOResponse atualizaEndereco(Long idEndereco, EnderecoDTORequest dto, String token){

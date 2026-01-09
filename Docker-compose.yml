@@ -9,12 +9,9 @@ services:
     environment:
       - SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/db_agendador
       - USUARIO_URL=http://usuario:8081
-      - SPRING_DATA_REDIS_HOST=redis
-      - SPRING_DATA_REDIS_PORT=6379
     depends_on:
       - mongo
-      - usuario
-      - redis
+      - usuario # Boa prática: garantir que o usuario suba antes
 
   bff-agendador-tarefas:
     build: .
@@ -22,13 +19,10 @@ services:
     ports:
       - "8084:8084"
     environment:
+      # --- CORREÇÃO 2: Sintaxe de URL correta (http://...) ---
       - USUARIO_URL=http://usuario:8081/usuario
       - AGENDADOR_TAREFAS_URL=http://agendador-tarefas:8082/tarefas
       - NOTIFICACAO_URL=http://notificacao:8083/email
-    depends_on:
-      - usuario
-      - agendador-tarefas
-      - notificacao
 
   usuario:
     build: ..\Usuario
@@ -36,46 +30,23 @@ services:
     ports:
       - "8081:8081"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_usuario:5432/db_usuario
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/db_usuario
       - SPRING_DATASOURCE_USERNAME=admin123
       - SPRING_DATASOURCE_PASSWORD=admin123
       - SPRING_MAIN_ALLOW_BEAN_DEFINITION_OVERRIDING=true
-      - SPRING_DATA_REDIS_HOST=redis
-      - SPRING_DATA_REDIS_PORT=6379
     depends_on:
-      - postgres_usuario
-      - redis
+      - postgres
 
   notificacao:
     build: ..\notificacao
     container_name: notificacao
     ports:
       - "8083:8083"
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_notificacao:5432/db_notificacao
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=1234
-      - SPRING_MAIN_ALLOW_BEAN_DEFINITION_OVERRIDING=true
-    depends_on:
-      - postgres_notificacao
 
-  redis:
-    image: redis:alpine
-    container_name: redis-cache
-    restart: always
-    ports:
-      - "6379:6379"
-
-  redis-insight:
-    image: redis/redisinsight:latest
-    container_name: redis-insight
-    restart: always
-    ports:
-       - "5540:5540"
-
-  postgres_usuario:
+  postgres:
     image: postgres:latest
-    container_name: postgres_usuario
+    container_name: postgres
+    restart: no
     ports:
       - "5433:5432"
     environment:
@@ -83,19 +54,10 @@ services:
       POSTGRES_PASSWORD: admin123
       POSTGRES_DB: db_usuario
 
-  postgres_notificacao:
-    image: postgres:latest
-    container_name: postgres_notificacao
-    ports:
-      - "5434:5432"
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 1234
-      POSTGRES_DB: db_notificacao
-
   mongo:
     image: mongo:latest
     container_name: mongo
+    restart: no
     ports:
       - "27017:27017"
     environment:

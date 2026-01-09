@@ -1,7 +1,7 @@
 package com.lucasteixeira.bff_agendador_tarefas.controller;
 
 
-import com.lucasteixeira.bff_agendador_tarefas.business.services.UsuarioService;
+
 import com.lucasteixeira.bff_agendador_tarefas.business.dto.in.EnderecoDTORequest;
 import com.lucasteixeira.bff_agendador_tarefas.business.dto.in.LoginRequestDTO;
 import com.lucasteixeira.bff_agendador_tarefas.business.dto.in.TelefoneDTORequest;
@@ -10,6 +10,7 @@ import com.lucasteixeira.bff_agendador_tarefas.business.dto.out.EnderecoDTORespo
 import com.lucasteixeira.bff_agendador_tarefas.business.dto.out.TelefoneDTOResponse;
 import com.lucasteixeira.bff_agendador_tarefas.business.dto.out.UsuarioDTOResponse;
 import com.lucasteixeira.bff_agendador_tarefas.business.dto.out.ViaCepDTOResponse;
+import com.lucasteixeira.bff_agendador_tarefas.business.services.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -59,8 +60,7 @@ public class UsuarioController {
     public ResponseEntity<UsuarioDTOResponse> buscaUsuarioPorEmail(@RequestParam("email") String email,
                                                                    @Parameter(hidden = true)
                                                                    @RequestHeader(value = "Authorization", required = false) String token){
-        System.out.println(token);
-        return ResponseEntity.ok(usuarioService.buscaUsuarioPorEmail(email, token));
+        return ResponseEntity.ok(usuarioService.buscUsuarioPorEmail(email, token));
     }
 
     @DeleteMapping("/{email}")
