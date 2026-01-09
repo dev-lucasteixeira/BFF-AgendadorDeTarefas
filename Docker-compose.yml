@@ -11,7 +11,7 @@ services:
       - USUARIO_URL=http://usuario:8081
     depends_on:
       - mongo
-      - usuario # Boa prática: garantir que o usuario suba antes
+      - usuario
 
   bff-agendador-tarefas:
     build: .
@@ -19,7 +19,6 @@ services:
     ports:
       - "8084:8084"
     environment:
-      # --- CORREÇÃO 2: Sintaxe de URL correta (http://...) ---
       - USUARIO_URL=http://usuario:8081/usuario
       - AGENDADOR_TAREFAS_URL=http://agendador-tarefas:8082/tarefas
       - NOTIFICACAO_URL=http://notificacao:8083/email
@@ -42,6 +41,12 @@ services:
     container_name: notificacao
     ports:
       - "8083:8083"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db_notificacao:5432/db_notificacao
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=1234
+    depends_on:
+      - db_notificacao
 
   postgres:
     image: postgres:latest
@@ -53,6 +58,16 @@ services:
       POSTGRES_USER: admin123
       POSTGRES_PASSWORD: admin123
       POSTGRES_DB: db_usuario
+
+  db_notificacao:
+    image: postgres:latest
+    container_name: db_notificacao
+    environment:
+      POSTGRES_DB: db_notificacao
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+    ports:
+      - "5435:5432"
 
   mongo:
     image: mongo:latest

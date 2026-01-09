@@ -10,6 +10,7 @@ import com.lucasteixeira.bff_agendador_tarefas.business.dto.out.TelefoneDTORespo
 import com.lucasteixeira.bff_agendador_tarefas.business.dto.out.UsuarioDTOResponse;
 import com.lucasteixeira.bff_agendador_tarefas.business.dto.out.ViaCepDTOResponse;
 import com.lucasteixeira.bff_agendador_tarefas.infrastructure.client.UsuarioClient;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,12 +26,12 @@ public class UsuarioService {
         return usuarioClient.salvaUsuario(usuarioDTO);
     }
 
-
+    @CircuitBreaker(name = "login", fallbackMethod = "O serviço não está disponível")
     public String login(LoginRequestDTO loginRequestDTO){
         return usuarioClient.login(loginRequestDTO);
     }
 
-
+    @CircuitBreaker(name = "buscaUsuarioPorEmail", fallbackMethod = "O serviço não está disponível")
     public UsuarioDTOResponse buscUsuarioPorEmail(String email, String token){
         return usuarioClient.buscaUsuarioPorEmail(email, token);
     }
@@ -63,6 +64,7 @@ public class UsuarioService {
         return usuarioClient.cadastraTelefone(dto, token);
     }
 
+    @CircuitBreaker(name = "cep", fallbackMethod = "O serviço não está disponível")
     public ViaCepDTOResponse buscarEnderecoPorCep(String cep){
         return usuarioClient.buscarDadosCep(cep);
     }

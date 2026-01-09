@@ -1,0 +1,30 @@
+package com.lucasteixeira.bff_agendador_tarefas.infrastructure.configs;
+
+import feign.RequestInterceptor;
+import feign.RequestTemplate;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+@Component
+public class FeignInterceptor implements RequestInterceptor {
+
+    @Override
+    public void apply(RequestTemplate template) {
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+
+        if (attributes != null) {
+            HttpServletRequest request = attributes.getRequest();
+            String authorizationHeader = request.getHeader("Authorization");
+
+            if (authorizationHeader != null) {
+                if (authorizationHeader.toLowerCase().startsWith("bearer ")) {
+                    template.header("Authorization", authorizationHeader);
+                } else {
+                    template.header("Authorization", "Bearer " + authorizationHeader);
+                }
+            }
+        }
+    }
+}
