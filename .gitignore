@@ -32,3 +32,17 @@ build/
 ### VS Code ###
 .vscode/
 
+
+**/.terraform/*
+
+*.tfstate
+*.tfstate.*
+
+crash.log
+
+*.tfvars
+*.tfvars.json
+
+*.pem
+id_rsa
+id_ed25519
