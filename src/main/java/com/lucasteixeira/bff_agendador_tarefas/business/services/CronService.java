@@ -42,7 +42,7 @@ public class CronService {
         listaTarefas.forEach(tarefa -> {
             emailService.enviaEmail(tarefa);
             log.info("Email enviado para o usuario " + tarefa.getEmailUsuario());
-            tarefaService.alteraStatus(StatusNotificacaoEnum.NOTIFICADO, tarefa.getId());});
+            tarefaService.alteraStatus(StatusNotificacaoEnum.CONCLUIDO, tarefa.getId());});
     }
 
     public String login(LoginRequestDTO loginRequestDTO){

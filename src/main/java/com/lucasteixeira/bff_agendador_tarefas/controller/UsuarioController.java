@@ -18,6 +18,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/usuario")
@@ -46,8 +47,9 @@ public class UsuarioController {
     @ApiResponse(responseCode = "400", description = "Credenciais inválidas")
     @ApiResponse(responseCode = "401", description = "Usuário não autorizado")
     @ApiResponse(responseCode = "500", description = "Erro de servidor")
-    public String login(@RequestBody LoginRequestDTO loginRequestDTO){
-        return usuarioService.login(loginRequestDTO);
+    public Map<String, String> login(@RequestBody LoginRequestDTO loginRequestDTO){
+        String token = usuarioService.login(loginRequestDTO);
+        return Map.of("token", token);
     }
 
     //Ele procura o usuario pelo email

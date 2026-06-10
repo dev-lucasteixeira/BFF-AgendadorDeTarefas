@@ -32,7 +32,7 @@ public class UsuarioService {
 
 
     public UsuarioDTOResponse buscUsuarioPorEmail(String email, String token){
-        return usuarioClient.buscaUsuarioPorEmail(email);
+        return usuarioClient.buscaUsuarioPorEmail(email, token);
     }
 
     public void deletaUsuarioPorEmail(String email, String token){

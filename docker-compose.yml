@@ -1,0 +1,128 @@
+services:
+  agendador-tarefas:
+    build: ../MS-Agendador
+    container_name: agendador-de-tarefas
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/db_agendador
+      - USUARIO_URL=http://usuario:8081
+      - API_SECURITY_TOKEN_SECRET=${JWT_SECRET}
+      - SPRING_RABBITMQ_ADDRESSES=${RABBIT_URL}
+      - SPRING_DATA_REDIS_HOST=redis
+      - SPRING_DATA_REDIS_PORT=6379
+    depends_on:
+      - mongo
+      - usuario
+      - redis
+
+  bff-agendador-tarefas:
+    build: .
+    container_name: bff-agendador-de-tarefas
+    ports:
+      - "8084:8084"
+    environment:
+      - USUARIO_URL=http://usuario:8081/usuario
+      - AGENDADOR_TAREFAS_URL=http://agendador-tarefas:8082/tarefas
+      - NOTIFICACAO_URL=http://notificacao:8083/email
+
+  usuario: # <--- O BLOCO QUE ESTAVA FALTANDO
+    build: ../User-Management-Service
+    container_name: usuario
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/db_usuario
+      - SPRING_DATASOURCE_USERNAME=admin123
+      - SPRING_DATASOURCE_PASSWORD=admin123
+      - SPRING_MAIN_ALLOW_BEAN_DEFINITION_OVERRIDING=true
+      - VIACEP_URL=https://viacep.com.br/ws
+      - JWT_SECRET=c3VhX2NoYXZlX3NlY3JldGFfbXVpdG9fbGFyZ2FfZV9zZWd1cmFfMTIz
+      - JWT_EXPIRATION=3600000
+      - SPRING_RABBITMQ_ADDRESSES=${RABBIT_URL}
+      - SPRING_DATA_REDIS_HOST=redis
+      - SPRING_DATA_REDIS_PORT=6379
+    depends_on:
+      - postgres
+      - redis
+
+  notificacao:
+    build: ../Projeto-Notificacao  # <--- O DOCKER PRECISA DISSO PARA SABER O QUE RODAR
+    container_name: notificacao-ms
+    ports:
+      - "8083:8083"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db_notificacao:5432/db_notificacao
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=1234
+      - SPRING_RABBITMQ_ADDRESSES=${RABBIT_URL}
+      - SPRING_MAIL_HOST=smtp.gmail.com
+      - SPRING_MAIL_PORT=587
+      - SPRING_MAIL_USERNAME=lucast.leopoldino.rodrigues@gmail.com
+      - SPRING_MAIL_PASSWORD=${EMAIL_PASS}
+      - SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH=true
+      - SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE=true
+      # ESTA É A LINHA QUE RESOLVE O ERRO ATUAL:
+      - ENVIO_EMAIL_REMETENTE=lucast.leopoldino.rodrigues@gmail.com
+      - ENVIO_EMAIL_NOMEREMETENTE=Sistema de Notificacao
+    depends_on:
+      - notificacao-db
+
+  notificacao-db:
+    image: postgres:latest
+    container_name: db_notificacao
+    environment:
+      POSTGRES_DB: db_notificacao
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+    ports:
+      - "5435:5432"
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: admin123
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: db_usuario
+
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: db_agendador
+
+  redis:
+    image: redis:alpine
+    container_name: redis-cache
+    ports:
+      - "6379:6379"
+
+  frontend:
+    build: ../todo-frontend
+    container_name: todo-frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - bff-agendador-tarefas
+
+  localstack:
+    image: localstack/localstack:latest
+    container_name: localstack
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=s3,sqs,sns,ses,dynamodb,lambda,iam,cloudwatch,ssm
+      - AWS_DEFAULT_REGION=sa-east-1
+      - EDGE_PORT=4566
+      - DEBUG=0
+      - PERSISTENCE=1
+      - INIT_SCRIPTS_PATH=/etc/localstack/init/ready.d
+    volumes:
+      - ./infra/localstack/data:/var/lib/localstack
+      - ./scripts/init-aws.sh:/etc/localstack/init/ready.d/init-aws.sh
+      - /var/run/docker.sock:/var/run/docker.sock

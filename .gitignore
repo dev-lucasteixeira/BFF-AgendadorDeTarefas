@@ -46,3 +46,7 @@ crash.log
 *.pem
 id_rsa
 id_ed25519
+
+docker-compose.yml
+
+.env
